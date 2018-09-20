@@ -2,10 +2,13 @@ package com.example.adailson.template_cg;
 
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -13,7 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 //essa classe implementa os métodos necessários para
 //utilizar a biblioteca OPENGL no desenho gráfico que
 // sera apresentado na tela pela superficie de desenho
-class Renderizador implements GLSurfaceView.Renderer {
+class Renderizador implements GLSurfaceView.Renderer , View.OnTouchListener {
     int fps;
     long inicial = 0;
     long atual = 0;
@@ -62,6 +65,16 @@ class Renderizador implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
 
         gl.glViewport(0, 0, largura, altura);
+
+        float[] vetorJava = {
+                -200, 200,
+                -200, -200,
+                200, 200,
+                200, -200
+        };
+
+        buffer = criaNIOBuffer(vetorJava);
+
     }
 
     FloatBuffer criaNIOBuffer(float[] coordenadas) {
@@ -92,73 +105,36 @@ class Renderizador implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         //Este método é chamado n vezes por segundo para desenhar na tela.
         //(Determina o FPS)
-
-        float[] vetorJava = {
-                0, 0,
-                larguraX, 0,
-                larguraX / 2, alturaY / 2,
-                larguraX / 2, alturaY / 2,
-                larguraX, alturaY,
-                0,alturaY,
-                0, alturaY/2,
-                0,0,
-                larguraX/2, alturaY/2,
-                larguraX/2, 0,
-
-
-        };
-
-        buffer = criaNIOBuffer(vetorJava);
-
-        //Registra o NIOBuffer na OpenGL
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
-
         //Solicita openGL permissao para usar vetores de vertices
+//        posX += direcaox * 5;
+//
+//        if (posX + 50 / 2 >= larguraX || posX <= 0) {
+//            direcaox *= -1;
+//        }
+//
+//        posY += direcaoY * 5;
+//
+//        if (posY + 50 / 2 >= alturaY || posY <= 0) {
+//            direcaoY *= -1;
+//        }
+
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-        Triangulo tri = new Triangulo(gl);
-        Triangulo tri1 = new Triangulo(gl);
-        tri.setCor(0,1,0,0);;
-        tri.desenha(0, 3);
-
-        tri1.setCor(1,0,0,0);
-        tri1.desenha(3, 3);
-
-        Quadrado qua = new Quadrado(gl);
-
-        qua.setCor(0,0,1,0);
-        qua.desenha(6,4);
-
-        //gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        //gl.glColor4f(0, 0, 1, 0);
-        //gl.glDrawArrays(GL10.GL_TRIANGLES, 3, 3);
-
-/*
-        posX += direcaox * 5;
-
-        if (posX + 50 / 2 >= larguraX || posX <= 0) {
-            direcaox *= -1;
-        }
-
-        posY += direcaoY * 5;
-
-        if (posY + 50 / 2 >= alturaY || posY <= 0) {
-            direcaoY *= -1;
-        }
-
-*/
-
-        //Triangulo tri = new Triangulo(gl);
-
-
-/*
         gl.glLoadIdentity();
-        gl.glTranslatef(posX, posY, 0);
-        gl.glRotatef(angulo, 0, 0, 1);
+        gl.glTranslatef(direcaox, direcaoY, 0);
+        gl.glRotatef(angulo,0,0,1);
+
+        gl.glColor4f(0, 0, 1, 0);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+
+//        gl.glLoadIdentity();
+//        gl.glTranslatef(posX, posY, 0);
+//        gl.glRotatef(angulo, 0, 0, 1);
         angulo += 5;
-*/
+
 
         /*
         //Transformação geométrica
@@ -186,5 +162,16 @@ class Renderizador implements GLSurfaceView.Renderer {
         //Desenhar interpretando os vértices como triangulos (3 vertices)
         //iniciando da pos 0 até a 3 posição
 
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            direcaox = (int) motionEvent.getX();
+            direcaoY = alturaY - (int) motionEvent.getY();
+        }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+
+        }
+        return true;
     }
 }
