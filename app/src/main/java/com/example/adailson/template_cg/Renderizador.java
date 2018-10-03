@@ -69,10 +69,10 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
         gl.glViewport(0, 0, largura, altura);
 
         float[] vetorJava = {
-                -200, 200,
-                -200, -200,
-                200, 200,
-                200, -200
+                -100, 100,
+                -100, -100,
+                100, 100,
+                100, -100
         };
 
         buffer = criaNIOBuffer(vetorJava);
@@ -147,21 +147,40 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
 //            direcaoY *= -1;
 //        }
 
+        //
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glTranslatef(posX, posY, 0);
-        gl.glRotatef(angulo, 0, 0, 1);
 
-        gl.glColor4f(0, 0, 1, 0);
+        gl.glColor4f(1, 1, 0, 0);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+        gl.glPushMatrix();
+        gl.glColor4f(0, 1, 0, 0);
+        gl.glRotatef(angulo, 0,0,1);
+        gl.glTranslatef(350,0,0);
+        gl.glRotatef(angulo,0,0,4);
+        gl.glScalef(0.5f, 0.5f, 0.5f);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+        gl.glPushMatrix();
+        gl.glColor4f(1, 1, 1, 0);
+        gl.glRotatef(angulo, 0,0,1);
+        gl.glTranslatef(300,0,0);
+        gl.glRotatef(angulo,0,0,1);
+        gl.glScalef(0.5f, 0.5f, 0.5f);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+        gl.glPopMatrix();
+
+        gl.glPopMatrix();
 
 
         gl.glLoadIdentity();
 //        gl.glRotatef(angulo, 0, 0, 1);
-        angulo += 5;
+        angulo ++;
 
 
         /*
