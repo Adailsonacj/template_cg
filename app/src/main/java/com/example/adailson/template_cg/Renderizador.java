@@ -32,6 +32,7 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
     int alturaY = 0;
     int larguraX = 0;
     float angulo = 0;
+    boolean subindo;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -69,10 +70,10 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
         gl.glViewport(0, 0, largura, altura);
 
         float[] vetorJava = {
-                -100, 100,
-                -100, -100,
-                100, 100,
-                100, -100
+                -50, 350,
+                -50, 0,
+                50, 350,
+                50, 0,
         };
 
         buffer = criaNIOBuffer(vetorJava);
@@ -147,40 +148,46 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
 //            direcaoY *= -1;
 //        }
 
-        //
+        if(angulo == 10){
+            subindo = true;
+        }else if(angulo == -10){
+            subindo = false;
+        }
+
+
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glTranslatef(posX, posY, 0);
-
+        gl.glRotatef(angulo,0,0,1);
         gl.glColor4f(1, 1, 0, 0);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
         gl.glPushMatrix();
         gl.glColor4f(0, 1, 0, 0);
-        gl.glRotatef(angulo, 0,0,1);
-        gl.glTranslatef(350,0,0);
-        gl.glRotatef(angulo,0,0,4);
-        gl.glScalef(0.5f, 0.5f, 0.5f);
+        gl.glTranslatef(0,350,0);
+        gl.glRotatef(angulo,0,0,1);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
         gl.glPushMatrix();
-        gl.glColor4f(1, 1, 1, 0);
-        gl.glRotatef(angulo, 0,0,1);
-        gl.glTranslatef(300,0,0);
+        gl.glColor4f(1, 0, 0, 0);
+        gl.glTranslatef(0,350,0);
         gl.glRotatef(angulo,0,0,1);
-        gl.glScalef(0.5f, 0.5f, 0.5f);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
 
         gl.glPopMatrix();
 
-
         gl.glLoadIdentity();
 //        gl.glRotatef(angulo, 0, 0, 1);
-        angulo ++;
+
+        if(!subindo){
+            angulo ++;
+        }else{
+            angulo --;
+        }
 
 
         /*
