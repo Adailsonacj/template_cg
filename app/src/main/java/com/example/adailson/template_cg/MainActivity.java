@@ -47,18 +47,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this, accelerometer);
-    }
-
-    @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         float x = sensorEvent.values[0];
         float y = sensorEvent.values[1];

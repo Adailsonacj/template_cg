@@ -21,10 +21,10 @@ import javax.microedition.khronos.opengles.GL10;
 // sera apresentado na tela pela superficie de desenho
 class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
     int fps;
-    long inicial = 0;
-    long atual = 0;
-    FloatBuffer buffer;
-    FloatBuffer buffer2;
+    float inicial = 0;
+    float atual = 0;
+    FloatBuffer bufferPont;
+    FloatBuffer bufferQua;
     float posX = 0;
     float posY = 0;
     float direcaoY = 1;
@@ -33,6 +33,10 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
     int larguraX = 0;
     float angulo = 0;
     boolean subindo;
+    int milisegundo;
+    int segundo = 0;
+    int minuto;
+    int hora;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -69,14 +73,21 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
 
         gl.glViewport(0, 0, largura, altura);
 
-        float[] vetorJava = {
-                -50, 350,
-                -50, 0,
-                50, 350,
-                50, 0,
+        float[] vetorPont = {
+                -10, 350,
+                -10, 0,
+                10, 350,
+                10, 0,
+        };
+        float[] vetorQuadrado = {
+                -400, 400,
+                -400, -400,
+                400, 400,
+                400, -400,
         };
 
-        buffer = criaNIOBuffer(vetorJava);
+        bufferPont = criaNIOBuffer(vetorPont);
+        bufferQua = criaNIOBuffer(vetorQuadrado);
 
     }
 
@@ -109,85 +120,59 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
         //Este método é chamado n vezes por segundo para desenhar na tela.
         //(Determina o FPS)
         //Solicita openGL permissao para usar vetores de vertices
-//        posX = MainActivity.sensorDirecaoX;
-        if (posX >= larguraX) {
-            posX = larguraX;
-        }
-        if (posX <= 0) {
-            posX = 0;
-        }
-        if (posY >= alturaY) {
-            posY = alturaY;
-        }
-        if (posY <= 0) {
-            posY = 0;
-        }
-        if (MainActivity.sensorDirecaoX < 3) {
-            posX += 10;
-        }
-        if (MainActivity.sensorDirecaoX > -3) {
-            posX += -10;
-        }
-        if (MainActivity.sensorDirecaoY < 3) {
-            posY += 10;
-        }
-        if (MainActivity.sensorDirecaoY > -3) {
-            posY += -10;
-        }
-
-        Log.i("SENSOR", "" + posX + "");
-//        posX += direcaox * 5;
-//
-//        if (posX + 50 / 2 >= larguraX || posX <= 0) {
-//            direcaox *= -1;
-//        }
-//
-//        posY += direcaoY * 5;
-//
-//        if (posY + 50 / 2 >= alturaY || posY <= 0) {
-//            direcaoY *= -1;
-//        }
-
-        if(angulo == 10){
-            subindo = true;
-        }else if(angulo == -10){
-            subindo = false;
-        }
-
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
+        gl.glRotatef(0, 0, 0, 1);
         gl.glTranslatef(posX, posY, 0);
-        gl.glRotatef(angulo,0,0,1);
+        gl.glColor4f(0, 0, 1, 0);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, bufferQua);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+
+        gl.glPushMatrix();
+        gl.glRotatef(hora, 0, 0, 1);
         gl.glColor4f(1, 1, 0, 0);
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, buffer);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, bufferPont);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
-        gl.glPushMatrix();
+        gl.glScalef(0.80f, 0.80f, 0.80f);
         gl.glColor4f(0, 1, 0, 0);
-        gl.glTranslatef(0,350,0);
-        gl.glRotatef(angulo,0,0,1);
+        gl.glRotatef(120, 0, 0, 1);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
-        gl.glPushMatrix();
+        gl.glScalef(0.60f, 0.60f, 0.60f);
         gl.glColor4f(1, 0, 0, 0);
-        gl.glTranslatef(0,350,0);
-        gl.glRotatef(angulo,0,0,1);
+        gl.glRotatef(0, 0, 0, 1);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-        gl.glPopMatrix();
-
         gl.glPopMatrix();
 
         gl.glLoadIdentity();
-//        gl.glRotatef(angulo, 0, 0, 1);
 
-        if(!subindo){
-            angulo ++;
-        }else{
-            angulo --;
+
+
+        angulo ++;
+
+        atual = angulo;
+
+        if (atual-inicial>60){
+            segundo += -6;
+            angulo = 0;
+            inicial = angulo;
+
         }
+        if(segundo == -354){
+            segundo = 0;
+            minuto += -6;
+        }
+        if(minuto == -354){
+            minuto = 0;
+            hora += -6;
+        }
+
+        Log.i("AAA", "Segundo = " + segundo);
+
 
 
         /*
