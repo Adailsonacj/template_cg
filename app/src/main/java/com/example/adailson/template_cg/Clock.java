@@ -1,37 +1,37 @@
 package com.example.adailson.template_cg;
 
 public class Clock {
-    private float segundo;
-    private float minuto;
-    private float hora;
+    private int segundo;
+    private int minuto;
+    private int hora;
 
-    public Clock(float segundo, float minuto, float hora) {
+    public Clock(int segundo, int minuto, int hora) {
         this.segundo = segundo;
         this.minuto = minuto;
         this.hora = hora;
     }
 
-    public float getSegundo() {
-        return segundo;
+    public int getSegundo() {
+        return segundo*-6;
     }
 
-    public void setSegundo(float segundo) {
+    public void setSegundo(int segundo) {
         this.segundo = segundo;
     }
 
-    public float getMinuto() {
-        return minuto;
+    public int getMinuto() {
+        return minuto*-6;
     }
 
-    public void setMinuto(float minuto) {
+    public void setMinuto(int minuto) {
         this.minuto = minuto;
     }
 
-    public float getHora() {
-        return hora;
+    public int getHora() {
+        return hora*-30;
     }
 
-    public void setHora(float hora) {
+    public void setHora(int hora) {
         this.hora = hora;
     }
 }

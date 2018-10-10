@@ -34,9 +34,9 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
     float angulo = 0;
     boolean subindo;
     int milisegundo;
-    int segundo = 0;
-    int minuto;
-    int hora;
+    public static int segundo = 0;
+    public static int minuto;
+    public static int hora;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -88,7 +88,6 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
 
         bufferPont = criaNIOBuffer(vetorPont);
         bufferQua = criaNIOBuffer(vetorQuadrado);
-
     }
 
     FloatBuffer criaNIOBuffer(float[] coordenadas) {
@@ -126,31 +125,32 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glRotatef(0, 0, 0, 1);
-        gl.glTranslatef(posX, posY, 0);
+        gl.glTranslatef(larguraX/2, alturaY/2, 0);
         gl.glColor4f(0, 0, 1, 0);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, bufferQua);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
         gl.glPushMatrix();
+        //Ponteiro da hora
         gl.glRotatef(hora, 0, 0, 1);
         gl.glColor4f(1, 1, 0, 0);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, bufferPont);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
+        //Ponteiro do minuto
         gl.glScalef(0.80f, 0.80f, 0.80f);
         gl.glColor4f(0, 1, 0, 0);
-        gl.glRotatef(120, 0, 0, 1);
+        gl.glRotatef(minuto - hora, 0, 0, 1);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
+        //Ponteiro do segundo
         gl.glScalef(0.60f, 0.60f, 0.60f);
         gl.glColor4f(1, 0, 0, 0);
-        gl.glRotatef(0, 0, 0, 1);
+        gl.glRotatef(segundo - minuto, 0, 0, 1);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
 
         gl.glLoadIdentity();
-
-
 
         angulo ++;
 
@@ -162,12 +162,12 @@ class Renderizador implements GLSurfaceView.Renderer, View.OnTouchListener {
             inicial = angulo;
 
         }
-        if(segundo == -354){
-            segundo = 0;
+        if(segundo < -360){
+            segundo = -6;
             minuto += -6;
         }
-        if(minuto == -354){
-            minuto = 0;
+        if(minuto < -360){
+            minuto = -6;
             hora += -6;
         }
 
